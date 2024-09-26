@@ -4,8 +4,6 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,134 +15,105 @@ public class ExcelProcessorApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ExcelProcessorApplication.class, args);
-    }
-}
 
-@RestController
-class ExcelController {
+        try {
+            // Read data from the first two Excel files
+            Map<String, String> roleGroupData = readRoleGroupData("RolesGroups.xlsx");
+            Map<String, List<String>> userRolesData = readUserRolesData("UserRoles.xlsx");
 
-    @GetMapping("/process-excel")
-    public String processExcel() throws IOException {
-        // Step 1: Load the two Excel sheets
-        Map<String, List<String>> roleGroupMapping = loadRoleGroupData("roles_and_groups.xlsx");
-        Map<String, List<String>> userRoleMapping = loadUserRoleData("users_and_roles.xlsx");
+            // Process the data and generate the third Excel file
+            writeOutputExcel("Output.xlsx", roleGroupData, userRolesData);
 
-        // Step 2: Process the data to generate output
-        List<Map<String, Object>> processedData = processUserRoleData(roleGroupMapping, userRoleMapping);
-
-        // Step 3: Write the processed data to another Excel sheet
-        writeOutputToExcel(processedData, "output.xlsx");
-
-        return "Excel processed successfully. Check output.xlsx";
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private Map<String, List<String>> loadRoleGroupData(String filePath) throws IOException {
-        Map<String, List<String>> roleGroupMapping = new HashMap<>();
+    // Method to read role and group data from the first Excel file
+    private static Map<String, String> readRoleGroupData(String filePath) throws IOException {
+        Map<String, String> roleGroupMap = new HashMap<>();
         FileInputStream file = new FileInputStream(filePath);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
 
         for (Row row : sheet) {
-            if (row.getRowNum() == 0) continue; // Skip header row
+            if (row.getRowNum() == 0) continue;  // Skip header row
             String role = row.getCell(0).getStringCellValue();
             String groupNeeded = row.getCell(1).getStringCellValue();
-            String groupName = row.getCell(2).getStringCellValue();
-            roleGroupMapping.put(role, Arrays.asList(groupNeeded, groupName));
+            roleGroupMap.put(role, groupNeeded);
         }
-
         workbook.close();
-        return roleGroupMapping;
+        return roleGroupMap;
     }
 
-    private Map<String, List<String>> loadUserRoleData(String filePath) throws IOException {
-        Map<String, List<String>> userRoleMapping = new HashMap<>();
+    // Method to read user-role data from the second Excel file
+    private static Map<String, List<String>> readUserRolesData(String filePath) throws IOException {
+        Map<String, List<String>> userRolesMap = new HashMap<>();
         FileInputStream file = new FileInputStream(filePath);
         Workbook workbook = new XSSFWorkbook(file);
         Sheet sheet = workbook.getSheetAt(0);
 
         for (Row row : sheet) {
-            if (row.getRowNum() == 0) continue; // Skip header row
+            if (row.getRowNum() == 0) continue;  // Skip header row
             String user = row.getCell(0).getStringCellValue();
             String role = row.getCell(1).getStringCellValue();
-            userRoleMapping.computeIfAbsent(user, k -> new ArrayList<>()).add(role);
-        }
 
+            userRolesMap.computeIfAbsent(user, k -> new ArrayList<>()).add(role);
+        }
         workbook.close();
-        return userRoleMapping;
+        return userRolesMap;
     }
 
-    private List<Map<String, Object>> processUserRoleData(Map<String, List<String>> roleGroupMapping,
-                                                          Map<String, List<String>> userRoleMapping) {
-        List<Map<String, Object>> result = new ArrayList<>();
+    // Method to write the output Excel file based on the processed data
+    private static void writeOutputExcel(String filePath, Map<String, String> roleGroupData,
+                                         Map<String, List<String>> userRolesData) throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("User Roles Analysis");
 
-        for (String user : userRoleMapping.keySet()) {
-            Map<String, Object> userData = new HashMap<>();
-            List<String> roles = userRoleMapping.get(user);
+        // Create Header Row
+        Row header = sheet.createRow(0);
+        header.createCell(0).setCellValue("User");
+        header.createCell(1).setCellValue("All Roles User has");
+        header.createCell(2).setCellValue("Total Roles for User");
+        header.createCell(3).setCellValue("Names of roles where group needed is YES");
+        header.createCell(4).setCellValue("Names of roles where group needed is NO");
+        header.createCell(5).setCellValue("Names of roles where group needed is Not found");
 
-            List<String> rolesYes = new ArrayList<>();
-            List<String> groupsYes = new ArrayList<>();
-            List<String> rolesNo = new ArrayList<>();
-            List<String> rolesNotFound = new ArrayList<>();
+        int rowNum = 1;
+        for (String user : userRolesData.keySet()) {
+            Row row = sheet.createRow(rowNum++);
+
+            List<String> roles = userRolesData.get(user);
+            int totalRoles = roles.size();
+
+            List<String> rolesGroupYes = new ArrayList<>();
+            List<String> rolesGroupNo = new ArrayList<>();
+            List<String> rolesGroupNotFound = new ArrayList<>();
 
             for (String role : roles) {
-                List<String> groupData = roleGroupMapping.getOrDefault(role, Arrays.asList("Not found", ""));
-                String groupNeeded = groupData.get(0);
-                String groupName = groupData.get(1);
+                String groupNeeded = roleGroupData.getOrDefault(role, "Not found");
 
-                if ("Yes".equalsIgnoreCase(groupNeeded)) {
-                    rolesYes.add(role);
-                    groupsYes.add(groupName);
-                } else if ("No".equalsIgnoreCase(groupNeeded)) {
-                    rolesNo.add(role);
-                } else if ("Not found".equalsIgnoreCase(groupNeeded)) {
-                    rolesNotFound.add(role);
+                if ("Yes".equals(groupNeeded)) {
+                    rolesGroupYes.add(role);
+                } else if ("No".equals(groupNeeded)) {
+                    rolesGroupNo.add(role);
+                } else {
+                    rolesGroupNotFound.add(role);
                 }
             }
 
-            userData.put("User", user);
-            userData.put("Total Roles", roles.size());
-            userData.put("Roles (Yes)", String.join(", ", rolesYes));
-            userData.put("Groups (Yes)", String.join(", ", groupsYes));
-            userData.put("Roles (No)", String.join(", ", rolesNo));
-            userData.put("Roles (Not Found)", String.join(", ", rolesNotFound));
-
-            result.add(userData);
+            row.createCell(0).setCellValue(user);
+            row.createCell(1).setCellValue(String.join(", ", roles));
+            row.createCell(2).setCellValue(totalRoles);
+            row.createCell(3).setCellValue(String.join(", ", rolesGroupYes));
+            row.createCell(4).setCellValue(String.join(", ", rolesGroupNo));
+            row.createCell(5).setCellValue(String.join(", ", rolesGroupNotFound));
         }
 
-        return result;
-    }
-
-    private void writeOutputToExcel(List<Map<String, Object>> processedData, String filePath) throws IOException {
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Processed Data");
-
-        Row headerRow = sheet.createRow(0);
-        String[] headers = {"User", "Total Roles", "Roles (Yes)", "Groups (Yes)", "Roles (No)", "Roles (Not Found)"};
-        for (int i = 0; i < headers.length; i++) {
-            headerRow.createCell(i).setCellValue(headers[i]);
-        }
-
-        int rowNum = 1;
-        for (Map<String, Object> data : processedData) {
-            Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue((String) data.get("User"));
-            row.createCell(1).setCellValue((int) data.get("Total Roles"));
-            row.createCell(2).setCellValue((String) data.get("Roles (Yes)"));
-            row.createCell(3).setCellValue((String) data.get("Groups (Yes)"));
-            row.createCell(4).setCellValue((String) data.get("Roles (No)"));
-            row.createCell(5).setCellValue((String) data.get("Roles (Not Found)"));
-        }
-
+        // Write the output to the Excel file
         FileOutputStream fileOut = new FileOutputStream(filePath);
         workbook.write(fileOut);
         fileOut.close();
         workbook.close();
     }
 }
-/* 
- <dependency>
-        <groupId>org.apache.poi</groupId>
-        <artifactId>poi-ooxml</artifactId>
-        <version>5.2.2</version>
-    </dependency>
-*/
