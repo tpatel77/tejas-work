@@ -263,3 +263,90 @@ public class StringParser {
 
 String x =  "**SUMMARY:**\\n\\nThe patient with ID 1373065 has had multiple interactions with the pharmacy, primarily related to prescription management and inquiries. Key activities include:\\n\\n1. **Inbound Calls:**\\n   - **09/27/2024:** Inbound call from a pharmacist regarding ESTRADIOL, focused on benefit copay plan inquiry. The call was completed.\\n   - **09/24/2024:** Inbound call from a healthcare professional regarding TAMIFLU, focused on billing payment inquiry. The call was completed.\\n\\n2. **Task Management:**\\n   - Multiple tasks related to various prescriptions (TAMIFLU, GONAL-F RFF PEN, MENOPUR, GLEEVEC, ESTRADIOL) were placed on hold due to exceeding the maximum number of follow-up attempts.\\n   - Tasks were frequently marked for hold, released from hold, and reassigned, indicating ongoing issues with patient contact and follow-up.\\n\\n3. **Contact Attempts:**\\n   - Several unsuccessful attempts to contact the patient via phone were recorded, necessitating follow-up actions.\\n\\n4. **Prescription Verification:**\\n   - Prescriptions for TAMIFLU, GLEEVEC, MENOPUR, GONAL-F RFF PEN, and ESTRADIOL were verified and approved by pharmacists.\\n\\n**NBA (Next Best Action):**\\n\\n1. **Verify Current Status:**\\n   - Check the current status of the patient's prescriptions and any pending tasks or holds.\\n   \\n2. **Address Unresolved Issues:**\\n   - If the patient is calling, address any unresolved issues related to their prescriptions, especially those that have been placed on hold or require follow-up.\\n\\n3. **Provide Clear Information:**\\n   - Offer clear and concise information regarding the status of their prescriptions, any pending actions, and what steps are being taken to resolve any issues.\\n\\n4. **Schedule Follow-Up:**\\n   - If necessary, schedule a follow-up call or appointment to ensure that any outstanding issues are resolved promptly.\\n\\n**ESCALATION:**\\n\\nThe likelihood of escalation is **moderate to high** based on the following factors:\\n- Multiple unsuccessful contact attempts and tasks placed on hold indicate potential frustration or dissatisfaction.\\n- Frequent interactions and unresolved issues related to prescription management and billing inquiries.\\n- The patient may escalate if they feel their issues are not being addressed in a timely manner.\\n\\nTo mitigate escalation, ensure that the patient's concerns are addressed promptly and provide a clear action plan for resolving any outstanding issues.";
 String y = ""### SUMMARY:\\n\\nThe patient with ID 1373065 has had multiple interactions and activities related to their prescriptions. Key activities include:\\n\\n1. **Inbound Calls:**\\n   - **09/27/2024:** Inbound call from a pharmacist regarding ESTRADIOL for benefit copay plan inquiry.\\n   - **09/24/2024:** Inbound call from a healthcare professional regarding TAMIFLU for billing payment inquiry.\\n\\n2. **Task Management:**\\n   - Several tasks related to prescriptions (e.g., GONAL-F RFF PEN, MENOPUR, GLEEVEC, TAMIFLU++) have been placed on hold due to exceeding the maximum number of follow-up attempts.\\n   - Tasks were frequently marked for hold and then released from hold due to patient, prescriber, or payor requests.\\n   - Tasks were often unassigned and returned to the queue, indicating potential issues with task management or patient contact.\\n\\n3. **Contact Attempts:**\\n   - Multiple unsuccessful attempts to contact the patient via phone on 09/12/2024 and 09/13/2024.\\n   - Successful inbound calls on 09/24/2024 and 09/27/2024.\\n\\n4. **Prescription Verification:**\\n   - Prescriptions for ESTRADIOL, GONAL-F RFF PEN, MENOPUR, GLEEVEC, and TAMIFLU++ have been verified and approved by pharmacists.\\n\\n### NBA (Next Best Action):\\n\\n1. **Verify Current Status:**\\n   - Confirm the current status of the patient's prescriptions, especially those that were placed on hold or had follow-up attempts.\\n   \\n2. **Address Pending Issues:**\\n   - Resolve any pending issues related to the patient's inquiries about benefit copay plans and billing payments.\\n   \\n3. **Update Patient:**\\n   - Provide the patient with an update on the status of their prescriptions and any actions taken to resolve their issues.\\n\\n4. **Schedule Follow-Up:**\\n   - If necessary, schedule a follow-up call to ensure all patient concerns are addressed and to provide any additional information required.\\n\\n### ESCALATION:\\n\\n**Likelihood of Escalation: Moderate to High**\\n\\n- **Reasons:**\\n  - Multiple unsuccessful contact attempts and tasks being placed on hold indicate potential frustration or dissatisfaction from the patient.\\n  - Frequent task reassignments and holds suggest possible inefficiencies in handling the patient's prescriptions, which could lead to escalations if not resolved promptly.\\n  - The patient has had to make multiple inquiries about their prescriptions";
+
+
+public class EscalationExtractorMultiple {
+
+    public static void main(String[] args) {
+        // First sample input string
+        String string1 = "**SUMMARY:**\\n\\nThe patient with ID 1373065 has had multiple interactions with the pharmacy, primarily related to prescription management and inquiries. Key activities include:\\n\\n"
+                + "1. **Inbound Calls:**\\n   - **09/27/2024:** Inbound call from a pharmacist regarding ESTRADIOL, focused on benefit copay plan inquiry. The call was completed.\\n"
+                + "   - **09/24/2024:** Inbound call from a healthcare professional regarding TAMIFLU, focused on billing payment inquiry. The call was completed.\\n\\n"
+                + "2. **Task Management:**\\n   - Multiple tasks related to various prescriptions (TAMIFLU, GONAL-F RFF PEN, MENOPUR, GLEEVEC, ESTRADIOL) were placed on hold due to exceeding the maximum number of follow-up attempts.\\n"
+                + "   - Tasks were frequently marked for hold, released from hold, and reassigned, indicating ongoing issues with patient contact and follow-up.\\n\\n"
+                + "3. **Contact Attempts:**\\n   - Several unsuccessful attempts to contact the patient via phone were recorded, necessitating follow-up actions.\\n\\n"
+                + "4. **Prescription Verification:**\\n   - Prescriptions for TAMIFLU, GLEEVEC, MENOPUR, GONAL-F RFF PEN, and ESTRADIOL were verified and approved by pharmacists.\\n\\n"
+                + "**NBA (Next Best Action):**\\n\\n"
+                + "1. **Verify Current Status:**\\n   - Check the current status of the patient's prescriptions and any pending tasks or holds.\\n"
+                + "2. **Address Unresolved Issues:**\\n   - If the patient is calling, address any unresolved issues related to their prescriptions, especially those that have been placed on hold or require follow-up.\\n"
+                + "3. **Provide Clear Information:**\\n   - Offer clear and concise information regarding the status of their prescriptions, any pending actions, and what steps are being taken to resolve any issues.\\n"
+                + "4. **Schedule Follow-Up:**\\n   - If necessary, schedule a follow-up call or appointment to ensure that any outstanding issues are resolved promptly.\\n\\n"
+                + "**ESCALATION:**\\n\\n"
+                + "The likelihood of escalation is **moderate to high** based on the following factors:\\n"
+                + "- Multiple unsuccessful contact attempts and tasks placed on hold indicate potential frustration or dissatisfaction.\\n"
+                + "- Frequent interactions and unresolved issues related to prescription management and billing inquiries.\\n"
+                + "- The patient may escalate if they feel their issues are not being addressed in a timely manner.\\n\\n"
+                + "To mitigate escalation, ensure that the patient's concerns are addressed promptly and provide a clear action plan for resolving any outstanding issues.";
+
+        // Second sample input string
+        String string2 = "### SUMMARY:\\n\\nThe patient with ID 1373065 has had multiple interactions and activities related to their prescriptions. Key activities include:\\n\\n"
+                + "1. **Inbound Calls:**\\n   - **09/27/2024:** Inbound call from a pharmacist regarding ESTRADIOL for benefit copay plan inquiry.\\n"
+                + "   - **09/24/2024:** Inbound call from a healthcare professional regarding TAMIFLU for billing payment inquiry.\\n\\n"
+                + "2. **Task Management:**\\n   - Several tasks related to prescriptions (e.g., GONAL-F RFF PEN, MENOPUR, GLEEVEC, TAMIFLU++) have been placed on hold due to exceeding the maximum number of follow-up attempts.\\n"
+                + "   - Tasks were frequently marked for hold and then released from hold due to patient, prescriber, or payor requests.\\n"
+                + "   - Tasks were often unassigned and returned to the queue, indicating potential issues with task management or patient contact.\\n\\n"
+                + "3. **Contact Attempts:**\\n   - Multiple unsuccessful attempts to contact the patient via phone on 09/12/2024 and 09/13/2024.\\n"
+                + "   - Successful inbound calls on 09/24/2024 and 09/27/2024.\\n\\n"
+                + "4. **Prescription Verification:**\\n   - Prescriptions for ESTRADIOL, GONAL-F RFF PEN, MENOPUR, GLEEVEC, and TAMIFLU++ have been verified and approved by pharmacists.\\n\\n"
+                + "### NBA (Next Best Action):\\n\\n"
+                + "1. **Verify Current Status:**\\n   - Confirm the current status of the patient's prescriptions, especially those that were placed on hold or had follow-up attempts.\\n"
+                + "2. **Address Pending Issues:**\\n   - Resolve any pending issues related to the patient's inquiries about benefit copay plans and billing payments.\\n"
+                + "3. **Update Patient:**\\n   - Provide the patient with an update on the status of their prescriptions and any actions taken to resolve their issues.\\n"
+                + "4. **Schedule Follow-Up:**\\n   - If necessary, schedule a follow-up call to ensure all patient concerns are addressed and to provide any additional information required.\\n\\n"
+                + "### ESCALATION:\\n\\n"
+                + "**Likelihood of Escalation: Moderate to High**\\n\\n"
+                + "- **Reasons:**\\n  - Multiple unsuccessful contact attempts and tasks being placed on hold indicate potential frustration or dissatisfaction from the patient.\\n"
+                + "  - Frequent task reassignments and holds suggest possible inefficiencies in handling the patient's prescriptions, which could lead to escalations if not resolved promptly.\\n"
+                + "  - The patient has had to make multiple inquiries about their prescriptions.";
+
+        // Process both strings
+        System.out.println("Processing String 1:");
+        processEscalation(string1);
+
+        System.out.println("\nProcessing String 2:");
+        processEscalation(string2);
+    }
+
+    // Method to extract and print escalation details from a string
+    public static void processEscalation(String input) {
+        // Extract Escalation Likelihood
+        String escalationLikelihood = extractBetween(input, "The likelihood of escalation is **", "** based on the following factors:");
+        if (escalationLikelihood.equals("Not found")) {
+            escalationLikelihood = extractBetween(input, "**Likelihood of Escalation: ", "\\n\\n");
+        }
+
+        // Extract Escalation Reasons
+        String escalationReasons = extractBetween(input, "based on the following factors:", "To mitigate escalation,");
+        if (escalationReasons.equals("Not found")) {
+            escalationReasons = extractBetween(input, "- **Reasons:**", "\\nTo mitigate escalation,");
+        }
+
+        // Output the extracted values
+        System.out.println("Escalation Likelihood: " + escalationLikelihood);
+        System.out.println("Escalation Reasons:\n" + escalationReasons);
+    }
+
+    // Helper method to extract text between two strings
+    public static String extractBetween(String text, String start, String end) {
+        int startIndex = text.indexOf(start);
+        if (startIndex == -1) {
+            return "Not found";
+        }
+        startIndex += start.length();
+        int endIndex = text.indexOf(end, startIndex);
+        if (endIndex == -1) {
+            return text.substring(startIndex).trim();
+        }
+        return text.substring(startIndex, endIndex).trim();
+    }
+}
