@@ -22,6 +22,10 @@ public class PromptAdditionalData {
     }
 }
 
+
+
+
+
 ############
 
 public class AiPromptInput {
@@ -73,5 +77,40 @@ public class Request {
 
     public void setData(Data data) {
         this.data = data;
+    }
+}
+
+
+
+{
+    "statusCode": "0000",
+    "statusDescription": "Success",
+    "data": {
+        "prompAssist": {
+            "chatResponse": "ggggggggggggg",
+            "provider": "openai",
+            "guid": "test",
+            "promptAdditionalData": {
+                "query": "Take Medication at 1 PM everyday"
+            },
+            "statusCode": "0000",
+            "sessionId": null,
+            "model": "gpt-4o",
+            "statusDescription": "Success",
+            "inferenceDetails": {
+                "promptTokens": 107,
+                "completionTokens": 359,
+                "totalTokens": 466,
+                "inferenceTimeInMs": 4208.999999798834
+            },
+            "hyperParameters": {
+                "temperature": 0.1,
+                "maxTokens": 512,
+                "topP": 0.9,
+                "frequencyPenalty": 0,
+                "presencePenalty": 0
+            },
+            "promptId": "a7a2905f-7f88-4199-9d88-194b5d897c5f847"
+        }
     }
 }
