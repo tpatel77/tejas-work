@@ -1,0 +1,10 @@
+{
+    "data": {
+        "aiPromptInput": {
+            "promptAdditionalData": {
+                "query": "create new model"
+            },
+            "promptId": "a7a2905f-7f88-4199-9d88-194b5d897c5f847"
+        }
+    }
+}
