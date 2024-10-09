@@ -8,3 +8,70 @@
         }
     }
 }
+
+public class PromptAdditionalData {
+    private String query;
+
+    // Getter and Setter
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+}
+
+############
+
+public class AiPromptInput {
+    private PromptAdditionalData promptAdditionalData;
+    private String promptId;
+
+    // Getters and Setters
+    public PromptAdditionalData getPromptAdditionalData() {
+        return promptAdditionalData;
+    }
+
+    public void setPromptAdditionalData(PromptAdditionalData promptAdditionalData) {
+        this.promptAdditionalData = promptAdditionalData;
+    }
+
+    public String getPromptId() {
+        return promptId;
+    }
+
+    public void setPromptId(String promptId) {
+        this.promptId = promptId;
+    }
+}
+
+
+#######
+public class Data {
+    private AiPromptInput aiPromptInput;
+
+    // Getters and Setters
+    public AiPromptInput getAiPromptInput() {
+        return aiPromptInput;
+    }
+
+    public void setAiPromptInput(AiPromptInput aiPromptInput) {
+        this.aiPromptInput = aiPromptInput;
+    }
+}
+
+##############
+
+public class Request {
+    private Data data;
+
+    // Getter and Setter
+    public Data getData() {
+        return data;
+    }
+
+    public void setData(Data data) {
+        this.data = data;
+    }
+}
